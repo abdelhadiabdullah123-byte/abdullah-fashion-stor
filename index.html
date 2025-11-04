@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>الرئيسية — Abdullah Fashion</title>
+  <link rel="icon" href="favicon.svg" />
+  <link rel="preload" href="styles.css" as="style" /><link rel="stylesheet" href="styles.css" />
+  <style>
+    :root { --radius: 14px; --shadow: 0 10px 25px rgba(0,0,0,.08); }
+    @keyframes logoPop { 0%{ transform:scale(.7); opacity:.2 } 60%{ transform:scale(1.08); opacity:1 } 100%{ transform:scale(1) } }
+    @keyframes floatUp { 0%{ transform: translateY(12px); opacity:0 } 100%{ transform:none; opacity:1 } }
+    .brand .logo-badge { display:inline-grid; place-items:center; width:36px; height:36px; border-radius:12px; background:#111; color:#fff; margin-inline-end:.4rem; transform-origin:center; animation: logoPop .7s ease both; }
+    body.dark .brand .logo-badge { background:#1f2937; }
+    .brand .brand-name { animation: floatUp .6s .15s ease both; }
+
+    body.dark { background:#0f1115; color:#e6e9ef; }
+    body.dark .site-header, body.dark .site-footer { background:#0b0d10; border-color:#1b1f26; }
+    .toolbar { display:flex; gap:.6rem; align-items:center; margin-block:1rem; flex-wrap: wrap; }
+    .grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap:1rem; }
+    .card { position:relative; overflow:hidden; border-radius:var(--radius); box-shadow:var(--shadow); transition: transform .25s ease, box-shadow .25s ease; }
+    .card:hover { transform: translateY(-4px); }
+    .thumb { width:100%; height:290px; object-fit:cover; display:block; }
+    .badge { position:absolute; top:.6rem; inset-inline-start:.6rem; background:#111; color:#fff; padding:.25rem .5rem; border-radius:999px; font-size:.75rem; }
+    .badge.sale { background:#c81d25; } .badge.new { background:#059669; } .badge.hit { background:#2563eb; }
+    .fav { position:absolute; top:.6rem; inset-inline-end:.6rem; background:rgba(255,255,255,.85); backdrop-filter: blur(6px); border-radius:999px; width:36px; height:36px; display:grid; place-items:center; cursor:pointer; border:1px solid #eee; }
+    .content { padding:.75rem; display:grid; gap:.4rem; }
+    .stars { color:#f59e0b; font-size:.9rem; letter-spacing:1px; }
+    .price { font-weight:700; }
+    .old { text-decoration: line-through; opacity:.6; margin-inline-start:.4rem; font-weight:400; }
+    .note { opacity:.7; font-size:.85rem; }
+    .actions { display:flex; gap:.5rem; margin-top:.4rem; flex-wrap: wrap; }
+    .btn { display:inline-flex; align-items:center; justify-content:center; gap:.4rem; padding:.5rem .7rem; border:1px solid #ddd; border-radius:10px; text-decoration:none; font-size: 0.85rem; }
+    .btn.ghost { background:transparent; }
+    .btn.primary { background:#111; color:#fff; border-color:#111; }
+    body.dark .btn.primary { background:#e6e9ef; color:#111; border-color:#e6e9ef; }
+    .btn-group { display: flex; gap: 0.5rem; width: 100%; }
+    .btn-group .btn { flex: 1; }
+
+    /* Modal */
+    .modal { position:fixed; inset:0; z-index:1000; background:rgba(0,0,0,.5); display:none; place-items:center; padding:1rem; }
+
+    /* Splash */
+    .splash { position: fixed; inset: 0; z-index: 1000; background: radial-gradient(1200px 600px at 70% 10%, rgba(0,0,0,.06), transparent), linear-gradient(180deg, #ffffff, #f7f7f9 70%); display:grid; place-items:center; }
+    body.dark .splash { background: radial-gradient(1200px 600px at 70% 10%, rgba(255,255,255,.05), transparent), linear-gradient(180deg, #0f1115, #0b0d10 70%); }
+    .splash .box { text-align:center; display:grid; gap:.8rem; }
+    .splash .logo { width:84px; height:84px; border-radius:22px; display:grid; place-items:center; margin-inline:auto; box-shadow: 0 10px 30px rgba(0,0,0,.12); background:#fff; animation: logoPop .8s ease both; }
+    .splash .logo img { width:48px; height:48px; }
+    .splash h1 { margin:0; font-size:1.15rem; letter-spacing:.5px; animation: floatUp .7s .1s ease both; }
+    .splash p { margin:0; opacity:.7; animation: floatUp .7s .2s ease both; }
+    .progress { height:3px; width:160px; border-radius:999px; background:rgba(0,0,0,.08); overflow:hidden; margin:.5rem auto 0; }
+    .progress > i { display:block; height:100%; width:0; background:#111; animation: prog 1.6s ease-in-out both; }
+    body.dark .progress { background:rgba(255,255,255,.12); }
+    body.dark .progress > i { background:#e6e9ef; }
+    @keyframes prog { from{ width:0 } to{ width:100% } }
+    .splash.hide { opacity:0; pointer-events:none; transition: opacity .5s ease; }
+    
+    /* Top Banner */
+    .top-banner { background: linear-gradient(90deg, #c81d25, #dc2626); color: white; padding: 0.75rem; text-align: center; font-weight: 500; }
+    
+    @media (max-width: 768px) {
+      .toolbar { flex-direction: column; align-items: stretch; }
+      .toolbar > * { width: 100%; }
+      .btn-group { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="splash" id="splash" aria-hidden="true">
+    <div class="box">
+      <div class="logo"><img src="favicon.svg" alt="Logo"></div>
+      <h1>عبدالله فاشن</h1>
+      <p>أناقة كل يوم ✨</p>
+      <div class="progress"><i></i></div>
+    </div>
+  </div>
+
+  <div class="top-banner">✨ عرض خاص — خصومات حتى 20% على جميع المنتجات</div>
+
+  <header class="site-header">
+    <div class="container nav">
+      <div class="brand">
+        <span class="logo-badge">🛍️</span>
+        <a class="brand-name" href="index.html">Abdullah Fashion</a>
+      </div>
+      <nav class="links">
+        <a class="active" href="index.html">الرئيسية</a>
+        <a href="admin-mobile.html">الإدارة</a>
+        <a href="about.html">من نحن</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container toolbar">
+    <input id="q" type="search" placeholder="ابحث عن منتج: فستان، عباءة، معطف..." />
+    <select id="cat" aria-label="التصنيف">
+      <option value="">كل التصنيفات</option>
+      <option>فساتين</option><option>عبايات</option><option>بلايز</option><option>معاطف</option><option>أطقم</option>
+    </select>
+  </div>
+
+  <main class="container">
+    <section class="grid" id="grid"></section>
+    <p class="note">إذا لم تظهر منتجاتك: افتح <a href="admin-mobile.html">لوحة الإدارة</a> وأضف منتجات ثم عد هنا.</p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>للطلب عبر واتساب: <a href="https://wa.me/967736593097" target="_blank" rel="noopener">+967 736593097</a></p>
+      <small>© 2025 متجر عبدالله للأزياء — جميع الحقوق محفوظة</small>
+    </div>
+  </footer>
+
+  <!-- Product Modal -->
+  <div class="modal" id="productModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" style="display:none;"></div>
+
+<script>
+/* ===== Helpers ===== */
+const grid = document.getElementById('grid');
+const q = document.getElementById('q');
+const cat = document.getElementById('cat');
+const productModal = document.getElementById('productModal');
+const wa = (text) => 'https://wa.me/967736593097?text=' + encodeURIComponent(text);
+const fmt = (n) => new Intl.NumberFormat('ar-EG').format(n);
+function load(k,d){ try { return JSON.parse(localStorage.getItem(k)) ?? d } catch { return d } }
+function save(k,v){ localStorage.setItem(k, JSON.stringify(v)); }
+
+/* ===== Products ===== */
+const demo = [
+  { 
+    id: 1, 
+    title: "فستان سادة كتان", 
+    cat: "فساتين", 
+    price: 18000, 
+    old: 21000, 
+    img: "https://picsum.photos/id/1011/900/1200", 
+    rating: 4.7, 
+    tags:["new","hit"], 
+    desc:"فستان كتان ناعم مناسب للصيف."
+  },
+  { 
+    id: 2, 
+    title: "عباءة روز كلاسيك", 
+    cat: "عبايات", 
+    price: 22500, 
+    old: null, 
+    img: "https://picsum.photos/id/1005/900/1200", 
+    rating: 4.4, 
+    tags:["hit"], 
+    desc:"عباءة بتطريز خفيف."
+  },
+  { 
+    id: 3, 
+    title: "فستان زفاف مطرز", 
+    cat: "فساتين", 
+    price: 45000, 
+    old: 55000, 
+    img: "https://picsum.photos/id/1025/900/1200", 
+    rating: 4.9, 
+    tags:["new","sale"], 
+    desc:"فستان زفاف فاخر بتطريز يدوي."
+  },
+  { 
+    id: 4, 
+    title: "عباءة سهرة مطرزة", 
+    cat: "عبايات", 
+    price: 35000, 
+    old: 42000,
+    img: "https://picsum.photos/id/1039/900/1200", 
+    rating: 4.8, 
+    tags:["sale","hit"], 
+    desc:"عباءة سهرة فاخرة للمناسبات الخاصة."
+  }
+];
+
+let products = load('products', []);
+if (!Array.isArray(products) || products.length === 0) {
+  products = demo;
+  save('products', products);
+}
+
+/* ===== Render ===== */
+function cardTemplate(p){
+  const badges = (p.tags||[]).map(t=>{ 
+    const map={sale:'sale',new:'new',hit:'hit'}; 
+    const label=t==='sale'?'خصم': t==='new'?'جديد':'الأكثر مبيعًا'; 
+    return `<span class="badge ${map[t]}">${label}</span>`; 
+  }).join('');
+  
+  const priceDisplay = `<div class="price">${fmt(p.price)} ر.ي ${p.old?`<span class="old">${fmt(p.old)} ر.ي</span>`:''}</div>`;
+  
+  const actions = `<div class="btn-group">
+         <a class="btn primary" href="${wa('مرحبا، أود طلب: ' + p.title + ' — السعر: ' + fmt(p.price) + ' ر.ي')}" target="_blank" rel="noopener">اطلب الآن</a>
+         <a class="btn" href="${wa('أريد تفاصيل عن: ' + p.title)}" target="_blank" rel="noopener">استفسار</a>
+       </div>`;
+  
+  return `<article class="card" data-id="${p.id}" data-cat="${p.cat}">
+    ${badges}
+    <a href="${p.id? `product.html?id=${p.id}` : `#`}"><img class="thumb" src="${p.img || 'assets/placeholder.svg'}" alt="${p.title}" loading="lazy" onerror="this.src='assets/placeholder.svg'" /></a>
+      ${ (p.tags && p.tags.length) ? (`<div class="badges">` + p.tags.map(t => {const map={sale:'خصم', new:'جديد', bestseller:'الأكثر مبيعًا'};return `<span class='badge ${t}'>${map[t]||t}</span>`;}).join("") + `</div>`) : "" }
+    <div class="content">
+      <strong>${p.title}</strong>
+      ${priceDisplay}
+      <div class="note">${p.cat}</div>
+      ${actions}<button class='btn add-to-cart' data-id='${p.id}' data-title='${p.title}' data-price='${p.price}' data-img='${p.img || "assets/placeholder.svg"}'>أضف للسلة</button>
+    </div>
+  <button class="btn" style="width:100%;margin-top:.5rem" onclick="addToCart({id:p.id,title:p.title,price:p.price,img:p.img})">أضف إلى السلة</button>
+  </article>`;
+}
+
+function render(list){ 
+  grid.innerHTML = list.length > 0 
+    ? list.map(cardTemplate).join('') 
+    : '<p style="grid-column:1/-1; text-align:center; padding:2rem;">لا توجد منتجات تطابق معايير البحث</p>';
+}
+
+function applyFilters(){
+  const text = (q.value||'').toLowerCase().trim(); 
+  const c = cat.value;
+  
+  const filtered = products.filter(p => 
+    (!text || p.title.toLowerCase().includes(text)) && 
+    (!c || p.cat === c)
+  );
+  
+  render(filtered);
+}
+
+q.addEventListener('input', applyFilters);
+cat.addEventListener('change', applyFilters);
+
+/* ===== Quick View ===== */
+function openQuickView(p){
+  if (!p) return;
+  productModal.style.display = 'grid';
+  
+  const priceDisplay = `<div><span class="price">${fmt(p.price)} ر.ي</span> ${p.old?`<span class="old">${fmt(p.old)} ر.ي</span>`:''}</div>`;
+  
+  const actions = `<div class="actions">
+         <a class="btn primary" href="${wa('مرحبا، أود طلب: ' + p.title + ' — السعر: ' + fmt(p.price) + ' ر.ي')}" target="_blank" rel="noopener">اطلب الآن</a>
+         <a class="btn" href="${wa('أريد تفاصيل عن: ' + p.title)}" target="_blank" rel="noopener">استفسار</a>
+       </div>`;
+  
+  productModal.innerHTML = `
+    <div class="sheet" style="width:min(900px,96vw); background:#fff; color:#111; border-radius:14px; overflow:hidden; display:grid; grid-template-columns:1fr 1fr;">
+      <button class="close" id="closeModal" title="إغلاق" style="position:absolute; inset-inline-end:20px; inset-block-start:18px; background:#fff; border:1px solid #ddd; width:40px; height:40px; border-radius:50%; display:grid; place-items:center; cursor:pointer;">✕</button>
+      <img src="${p.img || 'assets/placeholder.svg'}" alt="${p.title}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='assets/placeholder.svg'" /></a>
+      <div class="box" style="padding:1rem; display:grid; gap:.6rem;">
+        <h3></a>
+        <div class="note">${p.cat||''}</div>
+        ${priceDisplay}
+        <p class="note">${p.desc||''}</p>
+        ${actions}<button class='btn add-to-cart' data-id='${p.id}' data-title='${p.title}' data-price='${p.price}' data-img='${p.img || "assets/placeholder.svg"}'>أضف للسلة</button>
+      </div>
+    </div>`;
+  
+  const closeBtn = document.getElementById('closeModal');
+  closeBtn.addEventListener('click', ()=> productModal.style.display='none');
+  productModal.addEventListener('click', (e)=>{ if(e.target===productModal) productModal.style.display='none'; });
+}
+
+/* ===== Deep link: ?id= ===== */
+(function(){
+  const params = new URLSearchParams(window.location.search);
+  const idParam = Number(params.get('id') || 0);
+  if (idParam){
+    const p = (products||[]).find(x=> Number(x.id)===idParam);
+    if (p) { setTimeout(()=> openQuickView(p), 400); }
+  }
+})();
+
+/* ===== Splash Hide ===== */
+window.addEventListener('load', ()=>{
+  const splash = document.getElementById('splash');
+  if (splash){ setTimeout(()=> { splash.classList.add('hide'); setTimeout(()=> splash.remove(), 600); }, 1600); }
+  
+  // Initial render
+  applyFilters();
+});
+</script>
+
+<script>
+async function fetchProducts(){
+  try{
+    const res = await fetch('/api/products');
+    if(!res.ok) throw new Error('fetch failed');
+    const data = await res.json();
+    return Array.isArray(data) ? data : [];
+  }catch(e){
+    console.error(e);
+    return [];
+  }
+}
+// إذا كان لديك كود سابق يعتمد على مصفوفة products، استبدله بالنداء التالي:
+(async () => {
+  if (typeof renderProducts === 'function'){
+    const products = await fetchProducts();
+    renderProducts(products);
+  }
+})();
+</script>
+
+<script>
+(function(){
+  function sid(){ return (localStorage.__sid ||= (Math.random().toString(36).slice(2) + Date.now().toString(36))); }
+  async function analyticsPing(){
+    try{
+      await fetch('/api/analytics/ping', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ sessionId: sid(), lang: navigator.language||'', path: '/' })
+      });
+    }catch(e){/* ignore */}
+  }
+  analyticsPing();
+  setInterval(analyticsPing, 60000); // كل دقيقة
+})();
+</script>
+
+
+<div id="cartFAB" style="position:fixed;bottom:1.3rem;left:1.3rem;background:#111;color:#fff;width:54px;height:54px;border-radius:999px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 10px 25px rgba(0,0,0,.25);z-index:1000">
+  🛒
+  <span id="cartCount" style="position:absolute;top:-6px;right:-6px;background:#ef4444;color:#fff;font-size:.65rem;border-radius:999px;padding:.1rem .35rem;min-width:20px;text-align:center">0</span>
+</div>
+<script>
+function cartGet(){ return JSON.parse(localStorage.getItem('cart')||'[]'); }
+function cartSet(c){ localStorage.setItem('cart', JSON.stringify(c)); }
+function cartCount(){ const c = cartGet(); return c.reduce((s,x)=>s+ (x.qty||1), 0); }
+function cartUpdateBadge(){ const el = document.getElementById('cartCount'); if(el) el.textContent = cartCount(); }
+document.getElementById('cartFAB').addEventListener('click', ()=>{ location.href = '/cart.html'; });
+cartUpdateBadge();
+</script>
+
+<script>
+function setupCartButtons(){
+  document.body.addEventListener('click', (e)=>{
+    const btn = e.target.closest('.add-to-cart');
+    if(!btn) return;
+    const id = btn.dataset.id;
+    const title = btn.dataset.title;
+    const price = Number(btn.dataset.price)||0;
+    const img = btn.dataset.img;
+    let cart = cartGet();
+    const found = cart.find(i=> String(i.id) === String(id));
+    if(found){ found.qty = (found.qty||1)+1; }
+    else { cart.push({ id, title, price, img, qty:1 }); }
+    cartSet(cart);
+    cartUpdateBadge();
+    btn.textContent = 'تمت الإضافة ✓';
+    setTimeout(()=>{ btn.textContent='أضف للسلة'; }, 1800);
+  });
+}
+setupCartButtons();
+</script>
+
+<script>
+/* CART_HELPERS */
+const CART_KEY = 'abdullah_cart';
+function getCart(){ try{ return JSON.parse(localStorage.getItem(CART_KEY)||'[]'); }catch(e){ return []; } }
+function setCart(items){ localStorage.setItem(CART_KEY, JSON.stringify(items)); updateCartBadge(); }
+function addToCart(p){
+  const items = getCart();
+  const idx = items.findIndex(x=>String(x.id)===String(p.id));
+  if(idx>=0){ items[idx].qty = (items[idx].qty||1) + (p.qty||1); }
+  else { items.push({ id:p.id, title:p.title, price:p.price, img:p.img||'', qty:p.qty||1 }); }
+  setCart(items);
+  // small toast
+  const t = document.getElementById('cartToast'); if(t){ t.style.display='block'; setTimeout(()=>t.style.display='none', 1500); }
+}
+function cartCount(){ return getCart().reduce((a,b)=>a+(b.qty||1),0); }
+function updateCartBadge(){
+  const b = document.getElementById('cartBadge');
+  if(b){ b.textContent = cartCount(); }
+}
+// Floating cart button
+(function(){
+  if(!document.getElementById('cartFab')){
+    const fab = document.createElement('a');
+    fab.id='cartFab';
+    fab.href='/cart.html';
+    fab.innerHTML='🛒 <span id="cartBadge">0</span>';
+    fab.style.cssText='position:fixed;right:14px;bottom:16px;background:#111;color:#fff;border-radius:999px;padding:.6rem .9rem;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.15);z-index:50;text-decoration:none';
+    document.body.appendChild(fab);
+    const toast = document.createElement('div');
+    toast.id='cartToast';
+    toast.textContent='أُضيف للسلة';
+    toast.style.cssText='position:fixed;right:14px;bottom:64px;background:#111;color:#fff;border-radius:10px;padding:.4rem .7rem;display:none;z-index:50';
+    document.body.appendChild(toast);
+  }
+  updateCartBadge();
+})();
+</script>
+
+</body>
+</html>
