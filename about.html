@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>من نحن — Abdullah Fashion</title>
+  <link rel="icon" href="favicon.svg" />
+  <style>
+    :root { --radius: 14px; --shadow: 0 10px 25px rgba(0,0,0,.08); }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: #f7f7f9; color: #111; line-height: 1.6; }
+    body.dark { background: #0f1115; color: #e6e9ef; }
+    .container { max-width: 800px; margin: 0 auto; padding: 0 1rem; }
+    .site-header { background: #fff; border-bottom: 1px solid #eee; padding: 1rem 0; margin-bottom: 2rem; }
+    body.dark .site-header { background: #0b0d10; border-color: #1b1f26; }
+    .nav { display: flex; justify-content: space-between; align-items: center; }
+    .brand { display: flex; align-items: center; gap: 0.5rem; font-weight: 700; font-size: 1.2rem; }
+    .logo-badge { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 12px; background: #111; color: #fff; }
+    body.dark .logo-badge { background: #1f2937; }
+    .links { display: flex; gap: 1.5rem; }
+    .links a { text-decoration: none; color: inherit; padding: 0.5rem 1rem; border-radius: 8px; transition: background 0.2s; }
+    .links a:hover { background: rgba(0,0,0,0.05); }
+    body.dark .links a:hover { background: rgba(255,255,255,0.05); }
+    .links a.active { background: #111; color: #fff; }
+    body.dark .links a.active { background: #e6e9ef; color: #111; }
+    
+    .about-section { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); padding: 2rem; margin-bottom: 2rem; }
+    body.dark .about-section { background: #1f2937; }
+    .about-header { text-align: center; margin-bottom: 2rem; }
+    .about-header h1 { font-size: 2.5rem; margin-bottom: 1rem; color: #111; }
+    body.dark .about-header h1 { color: #e6e9ef; }
+    .about-header p { font-size: 1.2rem; opacity: 0.8; }
+    
+    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+    .feature { text-align: center; padding: 1.5rem; }
+    .feature-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+    .feature h3 { margin-bottom: 0.5rem; }
+    .feature p { opacity: 0.8; }
+    
+    .contact-info { background: #f8fafc; border-radius: var(--radius); padding: 2rem; margin: 2rem 0; }
+    body.dark .contact-info { background: #374151; }
+    .contact-info h2 { margin-bottom: 1rem; }
+    .contact-details { display: grid; gap: 1rem; }
+    .contact-item { display: flex; align-items: center; gap: 1rem; }
+    .contact-icon { width: 40px; height: 40px; border-radius: 50%; background: #111; color: #fff; display: grid; place-items: center; }
+    body.dark .contact-icon { background: #e6e9ef; color: #111; }
+    
+    .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; border: 1px solid #ddd; border-radius: 10px; text-decoration: none; background: #fff; color: #111; cursor: pointer; font-size: 1rem; margin-top: 1rem; }
+    body.dark .btn { background: #1f2937; border-color: #374151; color: #e6e9ef; }
+    .btn.primary { background: #111; color: #fff; border-color: #111; }
+    body.dark .btn.primary { background: #e6e9ef; color: #111; border-color: #e6e9ef; }
+    
+    .site-footer { background: #fff; border-top: 1px solid #eee; padding: 2rem 0; margin-top: 3rem; text-align: center; }
+    body.dark .site-footer { background: #0b0d10; border-color: #1b1f26; }
+    
+    @media (max-width: 768px) {
+      .nav { flex-direction: column; gap: 1rem; }
+      .links { gap: 0.5rem; }
+      .about-header h1 { font-size: 2rem; }
+    }
+  </style>
+
+    <link rel="preload" href="styles.css" as="style" />
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav">
+      <div class="brand">
+        <span class="logo-badge">🛍️</span>
+        <a class="brand-name" href="index.html">Abdullah Fashion</a>
+      </div>
+      <nav class="links">
+        <a href="index.html">الرئيسية</a>
+        <a href="admin-mobile.html">الإدارة</a>
+        <a href="about.html" class="active">من نحن</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="about-section">
+      <div class="about-header">
+        <h1>من نحن</h1>
+        <p>متجر عبدالله فاشن — رفيق أناقتك اليومية</p>
+      </div>
+      
+      <div class="about-content">
+        <h2>قصتنا</h2>
+        <p>تأسس متجر عبدالله فاشن في عام 2025 بهدف تقديم أحدث صيحات الموضة والأزياء بجودة عالية وأسعار مناسبة. نحن نؤمن بأن الأناقة حق للجميع، ونسعى لجعلها في متناول كل عميل.</p>
+        
+        <h2>رؤيتنا</h2>
+        <p>أن نكون الوجهة الأولى للأناقة والعصرية في عالم الأزياء، من خلال تقديم منتجات عالية الجودة وخدمة عملاء متميزة.</p>
+        
+        <h2>قيمنا</h2>
+        <ul style="margin-right: 1.5rem; margin-bottom: 1.5rem;">
+          <li>الجودة في كل منتج</li>
+          <li>الشفافية في التعامل</li>
+          <li>التطوير المستمر</li>
+          <li>رضا العملاء أولاً</li>
+        </ul>
+      </div>
+      
+      <div class="features">
+        <div class="feature">
+          <div class="feature-icon">🎯</div>
+          <h3>جودة عالية</h3>
+          <p>نختار منتجاتنا بعناية لضمان الجودة والأناقة</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">🚚</div>
+          <h3>توصيل سريع</h3>
+          <p>خدمة توصيل سريعة وموثوقة لجميع أنحاء اليمن</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">💬</div>
+          <h3>دعم متواصل</h3>
+          <p>فريق دعم متاح للإجابة على استفساراتك</p>
+        </div>
+      </div>
+      
+      <div class="contact-info">
+        <h2>تواصل معنا</h2>
+        <div class="contact-details">
+          <div class="contact-item">
+            <div class="contact-icon">📞</div>
+            <div>
+              <strong>هاتف الواتساب</strong>
+              <p>+967 736593097</p>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">🕒</div>
+            <div>
+              <strong>أوقات العمل</strong>
+              <p>كل أيام الأسبوع من 9 صباحاً حتى 10 مساءً</p>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">📍</div>
+            <div>
+              <strong>موقعنا</strong>
+              <p>نعمل عبر الإنترنت لتوصيل الطلبات لجميع أنحاء اليمن</p>
+            </div>
+          </div>
+        </div>
+        
+        <a href="https://wa.me/967736593097" class="btn primary" target="_blank">تواصل معنا عبر واتساب</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>للتواصل: <a href="https://wa.me/967736593097" target="_blank">+967 736593097</a></p>
+      <small>© 2025 متجر عبدالله للأزياء — جميع الحقوق محفوظة</small>
+    </div>
+  </footer>
+
+  <script>
+    // دالة لتبديل السمة (فاتح/داكن)
+    function toggleTheme() {
+      document.body.classList.toggle('dark');
+      const isDark = document.body.classList.contains('dark');
+      localStorage.setItem('darkTheme', isDark);
+    }
+    
+    // تهيئة الصفحة عند التحميل
+    document.addEventListener('DOMContentLoaded', function() {
+      // تحميل تفضيلات السمة
+      if (localStorage.getItem('darkTheme') === 'true') {
+        document.body.classList.add('dark');
+      }
+    });
+  </script>
+
+<script>
+(function(){
+  function sid(){ return (localStorage.__sid ||= (Math.random().toString(36).slice(2) + Date.now().toString(36))); }
+  async function analyticsPing(){
+    try{
+      await fetch('/api/analytics/ping', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ sessionId: sid(), lang: navigator.language||'', path: '/about.html' })
+      });
+    }catch(e){/* ignore */}
+  }
+  analyticsPing();
+  setInterval(analyticsPing, 60000); // كل دقيقة
+})();
+</script>
+
+</body>
+</html>
