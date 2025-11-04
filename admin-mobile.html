@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>لوحة الإدارة — Abdullah Fashion</title>
+  <link rel="icon" href="favicon.svg" />
+  <style>
+    :root { --radius: 14px; --shadow: 0 10px 25px rgba(0,0,0,.08); }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: #f7f7f9; color: #111; line-height: 1.6; }
+    body.dark { background: #0f1115; color: #e6e9ef; }
+    .container { max-width: 1000px; margin: 0 auto; padding: 0 1rem; }
+    .site-header { background: #fff; border-bottom: 1px solid #eee; padding: 1rem 0; margin-bottom: 2rem; }
+    body.dark .site-header { background: #0b0d10; border-color: #1b1f26; }
+    .nav { display: flex; justify-content: space-between; align-items: center; }
+    .brand { display: flex; align-items: center; gap: 0.5rem; font-weight: 700; font-size: 1.2rem; }
+    .logo-badge { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 12px; background: #111; color: #fff; }
+    body.dark .logo-badge { background: #1f2937; }
+    .links { display: flex; gap: 1.5rem; }
+    .links a { text-decoration: none; color: inherit; padding: 0.5rem 1rem; border-radius: 8px; transition: background 0.2s; }
+    .links a:hover { background: rgba(0,0,0,0.05); }
+    body.dark .links a:hover { background: rgba(255,255,255,0.05); }
+    .links a.active { background: #111; color: #fff; }
+    body.dark .links a.active { background: #e6e9ef; color: #111; }
+    
+    .page-header { margin-bottom: 2rem; text-align: center; }
+    .page-header h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+    .page-header p { opacity: 0.7; }
+    
+    .admin-actions { display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
+    .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; border: 1px solid #ddd; border-radius: 10px; text-decoration: none; background: #fff; color: #111; cursor: pointer; font-size: 1rem; }
+    body.dark .btn { background: #1f2937; border-color: #374151; color: #e6e9ef; }
+    .btn.primary { background: #111; color: #fff; border-color: #111; }
+    body.dark .btn.primary { background: #e6e9ef; color: #111; border-color: #e6e9ef; }
+    .btn.success { background: #059669; color: #fff; border-color: #059669; }
+    .btn.danger { background: #dc2626; color: #fff; border-color: #dc2626; }
+    
+    .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 3rem; }
+    .product-card { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+    body.dark .product-card { background: #1f2937; }
+    .product-image { width: 100%; height: 200px; object-fit: cover; }
+    .product-content { padding: 1rem; }
+    .product-title { font-weight: 700; margin-bottom: 0.5rem; }
+    .product-price { font-weight: 700; color: #059669; margin-bottom: 0.5rem; }
+    .product-old-price { text-decoration: line-through; opacity: 0.6; margin-right: 0.5rem; }
+    .product-category { opacity: 0.7; font-size: 0.9rem; margin-bottom: 1rem; }
+    .product-actions { display: flex; gap: 0.5rem; }
+    .product-actions .btn { flex: 1; padding: 0.5rem; font-size: 0.9rem; }
+    
+    .form-section { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); padding: 2rem; margin-bottom: 2rem; }
+    body.dark .form-section { background: #1f2937; }
+    .form-section h2 { margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid #eee; }
+    body.dark .form-section h2 { border-color: #374151; }
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
+    .form-control { width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
+    body.dark .form-control { background: #374151; border-color: #4b5563; color: #e6e9ef; }
+    .form-row { display: flex; gap: 1rem; }
+    .form-row .form-group { flex: 1; }
+    textarea.form-control { min-height: 100px; resize: vertical; }
+    
+    .alert { padding: 1rem; border-radius: 8px; margin-bottom: 1rem; }
+    .alert.success { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+    body.dark .alert.success { background: #064e3b; color: #a7f3d0; border-color: #065f46; }
+    .alert.error { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+    body.dark .alert.error { background: #7f1d1d; color: #fecaca; border-color: #991b1b; }
+    
+    .site-footer { background: #fff; border-top: 1px solid #eee; padding: 2rem 0; margin-top: 3rem; text-align: center; }
+    body.dark .site-footer { background: #0b0d10; border-color: #1b1f26; }
+    
+    @media (max-width: 768px) {
+      .nav { flex-direction: column; gap: 1rem; }
+      .links { gap: 0.5rem; }
+      .admin-actions { flex-direction: column; }
+      .form-row { flex-direction: column; }
+    }
+  </style>
+
+    <link rel="preload" href="styles.css" as="style" />
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="adminBar" style="background:#111;color:#fff;padding:.6rem 1rem;display:flex;gap:.75rem;align-items:center;justify-content:space-between">
+    <div>مرحبًا، <strong id="adminName">المسؤول</strong></div>
+<div id="visitorsCard" style="margin:1rem 1rem 0;background:#fff;border:1px solid #eee;border-radius:14px;padding:1rem;box-shadow:0 10px 30px rgba(0,0,0,.05)">
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap">
+    <div style="font-weight:700">👁️ الزوار الحاليون</div>
+    <div>النشط الآن: <strong id="activeNow">—</strong></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-top:.75rem">
+    <div>
+      <div style="font-weight:600;margin-bottom:.25rem">الدول (آخر ساعة)</div>
+      <div id="countriesList" style="font-size:.95rem;opacity:.9">—</div>
+    </div>
+    <div>
+      <div style="font-weight:600;margin-bottom:.25rem">المدن (آخر ساعة)</div>
+      <div id="citiesList" style="font-size:.95rem;opacity:.9">—</div>
+    </div>
+  </div>
+  <div style="margin-top:.75rem">
+    <div style="font-weight:600;margin-bottom:.25rem">أحدث الزيارات</div>
+    <div style="max-height:220px;overflow:auto;border:1px solid #f0f0f0;border-radius:10px">
+      <table style="width:100%;border-collapse:collapse;font-size:.92rem">
+        <thead>
+          <tr style="background:#fafafa">
+            <th style="text-align:right;padding:.5rem;border-bottom:1px solid #eee">الوقت</th>
+            <th style="text-align:right;padding:.5rem;border-bottom:1px solid #eee">البلد</th>
+            <th style="text-align:right;padding:.5rem;border-bottom:1px solid #eee">المدينة</th>
+            <th style="text-align:right;padding:.5rem;border-bottom:1px solid #eee">المسار</th>
+            <th style="text-align:right;padding:.5rem;border-bottom:1px solid #eee">IP</th>
+          </tr>
+        </thead>
+        <tbody id="recentTable"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+    <div style="display:flex;gap:.5rem;align-items:center">
+      <button id="changePwBtn" style="background:#fff;color:#111;border:none;border-radius:8px;padding:.45rem .8rem;cursor:pointer">تغيير كلمة المرور</button>
+      <button id="waShareBtn" style="background:#fff;color:#111;border:none;border-radius:8px;padding:.45rem .8rem;cursor:pointer">مشاركة واتساب</button>
+      <button id="logoutBtn" style="background:#fff;color:#111;border:none;border-radius:8px;padding:.45rem .8rem;cursor:pointer">تسجيل الخروج</button>
+    </div>
+  </div>
+  <header class="site-header">
+    <div class="container nav">
+      <div class="brand">
+        <span class="logo-badge">🛍️</span>
+        <span>Abdullah Fashion</span>
+      </div>
+      <nav class="links">
+        <a href="index.html">الرئيسية</a>
+        <a href="admin-mobile.html" class="active">الإدارة</a>
+        <a href="about.html">من نحن</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="page-header">
+      <h1>لوحة إدارة المتجر</h1>
+      <p>إدارة منتجات متجر عبدالله فاشن</p>
+    </div>
+    
+    <div id="alertContainer"></div>
+    
+    <div class="admin-actions">
+      <button class="btn primary" onclick="showAddForm()">إضافة منتج جديد</button>
+      <button class="btn" onclick="exportProducts()">تصدير المنتجات</button>
+      <button class="btn danger" onclick="resetProducts()">إعادة التعيين</button>
+      <button class="btn" onclick="toggleTheme()">تبديل السمة</button>
+    </div>
+    
+    <div class="form-section" id="addProductForm" style="display: none;">
+      <h2>إضافة منتج جديد</h2>
+      <form id="productForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="productTitle">اسم المنتج</label>
+            <input type="text" id="productTitle" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label for="productCategory">التصنيف</label>
+            <select id="productCategory" class="form-control" required>
+              <option value="">اختر التصنيف</option>
+              <option value="فساتين">فساتين</option>
+              <option value="عبايات">عبايات</option>
+              <option value="بلايز">بلايز</option>
+              <option value="معاطف">معاطف</option>
+              <option value="أطقم">أطقم</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="productPrice">السعر (ر.ي)</label>
+            <input type="number" id="productPrice" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label for="productOldPrice">السعر القديم (ر.ي) - اختياري</label>
+            <input type="number" id="productOldPrice" class="form-control">
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="productImage">رابط الصورة</label>
+          <input type="url" id="productImage" class="form-control" required placeholder="https://example.com/image.jpg" readonly>
+    <div class="hint" style="font-size:.85rem;opacity:.8;margin-top:.25rem">هذا الحقل يُملأ تلقائيًا بعد رفع الصورة (للقراءة فقط)</div>
+    <div class="hint">أو قم برفع صورة من جهازك</div>
+    <input type="file" id="imgUpload" accept="image/*">
+    <img id="imgPreview" style="max-width: 120px; display: none; margin-top: .5rem;"</div>
+<div class="form-group"><label>صور إضافية (اختياري — عدة صور)</label><input type="file" id="imgsUpload" accept="image/*" multiple><div id="imgsTray" style="display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.5rem"></div> alt="معاينة الصورة" />
+        </div>
+        
+        <div class="form-group">
+          <label for="productDescription">وصف المنتج</label>
+          <textarea id="productDescription" class="form-control"></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label>علامات المنتج</label>
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 0.5rem;">
+            <label style="display: flex; align-items: center; gap: 0.5rem;">
+              <input type="checkbox" name="productTags" value="new">
+              جديد
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem;">
+              <input type="checkbox" name="productTags" value="sale">
+              خصم
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem;">
+              <input type="checkbox" name="productTags" value="hit">
+              الأكثر مبيعًا
+            </label>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <button type="submit" class="btn success">حفظ المنتج</button>
+          <button type="button" class="btn" onclick="hideAddForm()">إلغاء</button>
+        </div>
+      </form>
+    </div>
+    
+    <h2 style="margin-bottom: 1rem;">المنتجات الحالية (<span id="productsCount">0</span>)</h2>
+    <div class="products-grid" id="productsGrid">
+      <!-- سيتم ملء هذا القسم بالمنتجات الحالية -->
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>للتواصل: <a href="https://wa.me/967736593097" target="_blank">+967 736593097</a></p>
+      <small>© 2025 متجر عبدالله للأزياء — جميع الحقوق محفوظة</small>
+    </div>
+  </footer>
+
+  <script>
+    // دالة لتحميل المنتجات من localStorage
+    function loadProducts() {
+      try {
+        return JSON.parse(localStorage.getItem('products')) || [];
+      } catch {
+        return [];
+      }
+    }
+    
+    // دالة لحفظ المنتجات في localStorage
+    function saveProducts(products) {
+      localStorage.setItem('products', JSON.stringify(products));
+    }
+    
+    // دالة لعرض رسالة للمستخدم
+    function showAlert(message, type = 'success') {
+      const alertContainer = document.getElementById('alertContainer');
+      const alert = document.createElement('div');
+      alert.className = `alert ${type}`;
+      alert.textContent = message;
+      alertContainer.appendChild(alert);
+      
+      setTimeout(() => {
+        alert.remove();
+      }, 5000);
+    }
+    
+    // دالة لعرض نموذج إضافة المنتج
+    function showAddForm() {
+      document.getElementById('addProductForm').style.display = 'block';
+      document.getElementById('productForm').reset();
+    }
+    
+    // دالة لإخفاء نموذج إضافة المنتج
+    function hideAddForm() {
+      document.getElementById('addProductForm').style.display = 'none';
+    }
+    
+    // دالة لعرض المنتجات
+    function renderProducts() {
+      const products = loadProducts();
+      const productsGrid = document.getElementById('productsGrid');
+      const productsCount = document.getElementById('productsCount');
+      
+      productsCount.textContent = products.length;
+      
+      if (products.length === 0) {
+        productsGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 2rem;">لا توجد منتجات مضافة بعد</p>';
+        return;
+      }
+      
+      productsGrid.innerHTML = products.map(product => `
+        <div class="product-card" data-id="${product.id}">
+          <img src="${product.img || 'assets/placeholder.svg'}" alt="${product.title}" class="product-image" onerror="this.src='assets/placeholder.svg'">
+          <div class="product-content">
+            <div class="product-title">${product.title}</div>
+            <div class="product-price">
+              ${product.old ? `<span class="product-old-price">${product.old} ر.ي</span>` : ''}
+              ${product.price} ر.ي
+            </div>
+            <div class="product-category">${product.cat}</div>
+            <div class="product-actions">
+              <button class="btn" onclick="editProduct(${product.id})">تعديل</button>
+              <button class="btn danger" onclick="deleteProduct(${product.id})">حذف</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+    
+    // دالة لإضافة منتج جديد
+    document.getElementById('productForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const title = document.getElementById('productTitle').value;
+      const category = document.getElementById('productCategory').value;
+      const price = parseInt(document.getElementById('productPrice').value);
+      const oldPrice = document.getElementById('productOldPrice').value ? parseInt(document.getElementById('productOldPrice').value) : null;
+      const image = document.getElementById('productImage').value
+      if(!image){ alert('يرجى إدخال رابط صورة صالح أو رفع صورة.'); return; };
+      const description = document.getElementById('productDescription').value;
+      
+      const tags = [];
+      document.querySelectorAll('input[name="productTags"]:checked').forEach(checkbox => {
+        tags.push(checkbox.value);
+      });
+      
+      const products = loadProducts();
+      const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+      
+      const imgs = window.__extraImages || [];
+const newProduct = {
+  id: undefined,
+  title: title,
+  price: price,
+  oldPrice: oldPrice,
+  cat: category,
+  desc: description,
+  img: image,
+  images: imgs,
+  tags: tags,
+  rating: 4.5
+};
+      
+      // إرسال إلى الخادم
+await fetch('/api/products', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(newProduct)
+});
+      saveProducts(products);
+      renderProducts();
+      hideAddForm();
+      showAlert('تم إضافة المنتج بنجاح');
+    });
+    
+    // دالة لحذف منتج
+    function deleteProduct(id) {
+      if (confirm('هل أنت متأكد من حذف هذا المنتج؟')) {
+        const products = loadProducts();
+        const updatedProducts = products.filter(product => product.id !== id);
+        saveProducts(updatedProducts);
+        renderProducts();
+        showAlert('تم حذف المنتج بنجاح');
+      }
+    }
+    
+    // دالة لتعديل منتج (مبسطة - يمكن تطويرها)
+    function editProduct(id) {
+      const products = loadProducts();
+      const product = products.find(p => p.id === id);
+      
+      if (product) {
+        document.getElementById('productTitle').value = product.title;
+        document.getElementById('productCategory').value = product.cat;
+        document.getElementById('productPrice').value = product.price;
+        document.getElementById('productOldPrice').value = product.old || '';
+        document.getElementById('productImage').value = product.img;
+        document.getElementById('productDescription').value = product.desc || '';
+        
+        // تفريغ العلامات المحددة مسبقاً
+        document.querySelectorAll('input[name="productTags"]').forEach(checkbox => {
+          checkbox.checked = false;
+        });
+        
+        // تحديد العلامات الحالية للمنتج
+        if (product.tags) {
+          product.tags.forEach(tag => {
+            const checkbox = document.querySelector(`input[name="productTags"][value="${tag}"]`);
+            if (checkbox) checkbox.checked = true;
+          });
+        }
+        
+        showAddForm();
+        
+        // حذف المنتج القديم
+        const updatedProducts = products.filter(p => p.id !== id);
+        saveProducts(updatedProducts);
+        renderProducts();
+        
+        showAlert('يمكنك الآن تعديل بيانات المنتج', 'success');
+      }
+    }
+    
+    // دالة لتصدير المنتجات
+    function exportProducts() {
+      const products = loadProducts();
+      const dataStr = JSON.stringify(products, null, 2);
+      const dataBlob = new Blob([dataStr], {type: 'application/json'});
+      
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(dataBlob);
+      link.download = 'abdullah-fashion-products.json';
+      link.click();
+      
+      showAlert('تم تصدير المنتجات بنجاح');
+    }
+    
+    // دالة لإعادة تعيين المنتجات
+    function resetProducts() {
+      if (confirm('هل أنت متأكد من إعادة تعيين جميع المنتجات؟ سيتم حذف جميع المنتجات الحالية.')) {
+        localStorage.removeItem('products');
+        renderProducts();
+        showAlert('تم إعادة تعيين المنتجات بنجاح');
+      }
+    }
+    
+    // دالة لتبديل السمة (فاتح/داكن)
+    function toggleTheme() {
+      document.body.classList.toggle('dark');
+      const isDark = document.body.classList.contains('dark');
+      localStorage.setItem('darkTheme', isDark);
+    }
+    
+    // تهيئة الصفحة عند التحميل
+    document.addEventListener('DOMContentLoaded', function() {
+      // تحميل تفضيلات السمة
+      if (localStorage.getItem('darkTheme') === 'true') {
+        document.body.classList.add('dark');
+      }
+      
+      // عرض المنتجات الحالية
+      renderProducts();
+    });
+  </script>
+<script>
+(function(){
+  const up = document.getElementById('imgUpload');
+  const prev = document.getElementById('imgPreview');
+  const urlEl = document.getElementById('productImage');
+  if (up) {
+    up.addEventListener('change', (e) => {
+      const f = e.target.files && e.target.files[0];
+      if (!f) return;
+      const r = new FileReader();
+      r.onload = () => {
+        const dataUrl = r.result;
+        if (prev) { prev.src = dataUrl; prev.style.display = 'block'; }
+        if (urlEl) { urlEl.value = dataUrl; } // الكتابة التلقائية في خانة الرابط
+      };
+      r.readAsDataURL(f);
+    });
+  }
+})();
+</script>
+<script>
+(async () => {
+  try {
+    const res = await fetch('/api/auth/me');
+    if (!res.ok) throw new Error('unauth');
+    const data = await res.json();
+    if (data && data.ok && data.user) {
+      const el = document.getElementById('adminName');
+      if (el) el.textContent = data.user;
+    }
+  } catch (e) {
+    // غير مصرح: نعيد التوجيه لصفحة الدخول
+    location.href = '/login.html';
+  }
+})();
+
+document.getElementById('logoutBtn')?.addEventListener('click', async () => {
+  try {
+    await fetch('/api/auth/logout', { method: 'POST' });
+  } catch(e){}
+  location.href = '/login.html';
+});
+</script>
+<script>
+document.getElementById('changePwBtn')?.addEventListener('click', () => {
+  location.href = '/change-password.html';
+});
+</script>
+
+<script>
+(function(){
+  function sid(){ return (localStorage.__sid ||= (Math.random().toString(36).slice(2) + Date.now().toString(36))); }
+  async function analyticsPing(){
+    try{
+      await fetch('/api/analytics/ping', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ sessionId: sid(), lang: navigator.language||'', path: '/admin-mobile.html' })
+      });
+    }catch(e){/* ignore */}
+  }
+  analyticsPing();
+  setInterval(analyticsPing, 60000); // كل دقيقة
+})();
+</script>
+
+<script>
+async function refreshVisitors(){
+  try{
+    const res = await fetch('/api/analytics/summary');
+    if(!res.ok) throw new Error('unauthorized');
+    const d = await res.json();
+    document.getElementById('activeNow').textContent = d.active ?? 0;
+    const c = (d.countries||[]).filter(x=>x.country).map(x=>`${x.country} — ${x.c}`).join('<br>') || '—';
+    const ci = (d.cities||[]).filter(x=>x.city).map(x=>`${x.city} — ${x.c}`).join('<br>') || '—';
+    document.getElementById('countriesList').innerHTML = c;
+    document.getElementById('citiesList').innerHTML = ci;
+    const tbody = document.getElementById('recentTable');
+    tbody.innerHTML = (d.recent||[]).map(r=>`<tr>
+      <td style="padding:.5rem;border-bottom:1px solid #f6f6f6">${r.ts||''}</td>
+      <td style="padding:.5rem;border-bottom:1px solid #f6f6f6">${r.country||''}</td>
+      <td style="padding:.5rem;border-bottom:1px solid #f6f6f6">${r.city||''}</td>
+      <td style="padding:.5rem;border-bottom:1px solid #f6f6f6">${r.path||''}</td>
+      <td style="padding:.5rem;border-bottom:1px solid #f6f6f6">${r.ip||''}</td>
+    </tr>`).join('');
+  }catch(e){
+    // ignore
+  }
+}
+refreshVisitors();
+setInterval(refreshVisitors, 30000);
+</script>
+<script>
+document.getElementById('waShareBtn')?.addEventListener('click', async () => {
+  // Compose a simple message from form fields if available
+  const titleEl = document.getElementById('productTitle');
+  const priceEl = document.getElementById('productPrice');
+  const t = titleEl ? titleEl.value : '';
+  const p = priceEl ? priceEl.value : '';
+  const msg = encodeURIComponent(`منتج جديد:\n${t}\nالسعر: ${p} ر.ي\nرابط المتجر: ${location.origin}`);
+  try{
+    const r = await fetch('/config.json'); const c = r.ok? await r.json(): null;
+    const phone = c && c.whatsapp ? c.whatsapp : '';
+    const wa = phone ? `https://wa.me/${phone}?text=${msg}` : `https://wa.me/?text=${msg}`;
+    window.open(wa, '_blank');
+  }catch(e){
+    window.open(`https://wa.me/?text=${msg}`, '_blank');
+  }
+});
+</script>
+</body>
+</html>
