@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>تفاصيل المنتج</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <style>
+    .wrap{display:grid;grid-template-columns:1.2fr .8fr;gap:1rem;align-items:start}
+    .main-img{width:100%;max-height:520px;object-fit:cover;border-radius:14px;border:1px solid #eee}
+    .thumbs{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.5rem}
+    .thumbs img{width:80px;height:80px;object-fit:cover;border-radius:10px;border:2px solid transparent;cursor:pointer}
+    .thumbs img.active{border-color:#111}
+    .price{font-size:1.4rem;font-weight:800}
+    .old{opacity:.6;text-decoration:line-through;margin-inline-start:.5rem}
+    .btn{background:#111;color:#fff;border:none;border-radius:12px;padding:.8rem 1.1rem;cursor:pointer}
+    .tags{display:flex;gap:.25rem;flex-wrap:wrap;margin-top:.5rem}
+    .tag{background:#111;color:#fff;border-radius:8px;padding:.2rem .5rem;font-size:.8rem}
+    @media(max-width:900px){.wrap{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <nav class="topbar"><div class="container">تفاصيل المنتج</div></nav>
+  <main class="container">
+    <div class="wrap">
+      <div>
+        <img id="mainImg" class="main-img" src="/assets/placeholder.svg" alt="">
+        <div id="thumbs" class="thumbs"></div>
+      </div>
+      <div>
+        <h1 id="title"></h1>
+        <div><span id="price" class="price"></span><span id="old" class="old"></span></div>
+        <div id="cat" style="margin:.25rem 0;opacity:.9"></div>
+        <div id="tags" class="tags"></div>
+        <p id="desc" style="margin-top:.5rem"></p>
+        <div style="display:flex;gap:.5rem;align-items:center;margin-top:1rem;flex-wrap:wrap">
+<button id="addCart" class="btn" style="background:#10b981">أضف للسلة</button>
+          <button id="addCart" class="btn" style="background:#222">أضف إلى السلة</button>
+          <button id="waBtn" class="btn">اطلب عبر واتساب</button>
+          <a href="/" class="btn" style="background:#444">رجوع للواجهة</a>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script>
+  function qs(key){ const u=new URL(location.href); return u.searchParams.get(key); }
+  async function load(){
+    const id = qs('id');
+    if(!id) return;
+    const res = await fetch('/api/products/'+id);
+    if(!res.ok) return;
+    const p = await res.json();
+    document.getElementById('title').textContent = p.title||'';
+    document.getElementById('price').textContent = (p.price!=null? p.price : '') + ' ر.ي';
+    document.getElementById('old').textContent = (p.oldPrice? p.oldPrice+' ر.ي' : '');
+    document.getElementById('cat').textContent = p.cat? ('التصنيف: '+p.cat): '';
+    document.getElementById('desc').textContent = p.desc||'';
+    const tags = p.tags||[];
+    document.getElementById('tags').innerHTML = tags.map(t=>`<span class="tag">${t}</span>`).join('');
+
+    const imgs = (p.images && p.images.length)? p.images : (p.img? [p.img]: []);
+    const main = document.getElementById('mainImg');
+    main.src = imgs[0] || '/assets/placeholder.svg';
+    const th = document.getElementById('thumbs');
+    th.innerHTML = imgs.map((src,i)=>`<img data-i="${i}" src="${src}" class="${i===0?'active':''}">`).join('');
+    th.addEventListener('click', (e)=>{
+      const t = e.target.closest('img'); if(!t) return;
+      const i = Number(t.dataset.i);
+      main.src = imgs[i]; 
+      [...th.querySelectorAll('img')].forEach(x=>x.classList.remove('active'));
+      t.classList.add('active');
+    });
+
+    // WhatsApp order link
+    const qRes = await fetch('/config.json').catch(()=>null);
+    let conf=null; if(qRes && qRes.ok) conf = await qRes.json();
+    const phone = conf && conf.whatsapp ? conf.whatsapp : '';
+    const msg = encodeURIComponent(`مرحبًا، أريد طلب المنتج التالي:\nالمنتج: ${p.title}\nالسعر: ${p.price} ر.ي\nالرابط: ${location.href}`);
+    const waUrl = phone ? `https://wa.me/${phone}?text=${msg}` : `https://wa.me/?text=${msg}`;
+    document.getElementById('waBtn').addEventListener('click', ()=>{ window.open(waUrl, '_blank'); });
+  }
+  function cartGet(){ return JSON.parse(localStorage.getItem('cart')||'[]'); }
+function cartSet(c){ localStorage.setItem('cart', JSON.stringify(c)); }
+load();
+
+  </script>
+<script>
+// add-to-cart from product page
+document.addEventListener('click', (e)=>{
+  const btn = e.target.closest('#addCart');
+  if(!btn) return;
+  const title = document.getElementById('title').textContent;
+  const price = Number((document.getElementById('price').textContent||'').replace(/[^0-9.]/g,''))||0;
+  const mainImg = document.getElementById('mainImg').src;
+  const url = new URL(location.href);
+  const id = url.searchParams.get('id') || ('p-'+Date.now());
+  let cart = JSON.parse(localStorage.getItem('cart')||'[]');
+  const found = cart.find(i=> String(i.id) === String(id));
+  if(found){ found.qty = (found.qty||1)+1; }
+  else { cart.push({ id, title, price, img: mainImg, qty:1 }); }
+  localStorage.setItem('cart', JSON.stringify(cart));
+  btn.textContent='تمت الإضافة ✓';
+  setTimeout(()=>{ btn.textContent='أضف للسلة'; }, 1800);
+});
+</script>
+<script>
+/* Add to cart from details */
+document.getElementById('addCart').addEventListener('click', async () => {
+  const id = new URL(location.href).searchParams.get('id');
+  try{
+    const res = await fetch('/api/products/'+id);
+    if(!res.ok) return;
+    const p = await res.json();
+    addToCart({ id: p.id, title: p.title, price: p.price, img: (p.images && p.images[0]) || p.img || '' });
+  }catch(e){}
+});
+</script>
+
+<script>
+/* CART_HELPERS */
+const CART_KEY = 'abdullah_cart';
+function getCart(){ try{ return JSON.parse(localStorage.getItem(CART_KEY)||'[]'); }catch(e){ return []; } }
+function setCart(items){ localStorage.setItem(CART_KEY, JSON.stringify(items)); updateCartBadge(); }
+function addToCart(p){
+  const items = getCart();
+  const idx = items.findIndex(x=>String(x.id)===String(p.id));
+  if(idx>=0){ items[idx].qty = (items[idx].qty||1) + (p.qty||1); }
+  else { items.push({ id:p.id, title:p.title, price:p.price, img:p.img||'', qty:p.qty||1 }); }
+  setCart(items);
+  // small toast
+  const t = document.getElementById('cartToast'); if(t){ t.style.display='block'; setTimeout(()=>t.style.display='none', 1500); }
+}
+function cartCount(){ return getCart().reduce((a,b)=>a+(b.qty||1),0); }
+function updateCartBadge(){
+  const b = document.getElementById('cartBadge');
+  if(b){ b.textContent = cartCount(); }
+}
+// Floating cart button
+(function(){
+  if(!document.getElementById('cartFab')){
+    const fab = document.createElement('a');
+    fab.id='cartFab';
+    fab.href='/cart.html';
+    fab.innerHTML='🛒 <span id="cartBadge">0</span>';
+    fab.style.cssText='position:fixed;right:14px;bottom:16px;background:#111;color:#fff;border-radius:999px;padding:.6rem .9rem;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.15);z-index:50;text-decoration:none';
+    document.body.appendChild(fab);
+    const toast = document.createElement('div');
+    toast.id='cartToast';
+    toast.textContent='أُضيف للسلة';
+    toast.style.cssText='position:fixed;right:14px;bottom:64px;background:#111;color:#fff;border-radius:10px;padding:.4rem .7rem;display:none;z-index:50';
+    document.body.appendChild(toast);
+  }
+  updateCartBadge();
+})();
+</script>
+
+</body>
+</html>

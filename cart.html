@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>سلة المشتريات</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <style>
+    .cart-wrap{max-width:900px;margin:1rem auto;background:#fff;border:1px solid #eee;border-radius:14px;padding:1rem;box-shadow:0 10px 30px rgba(0,0,0,.05)}
+    .cart-row{display:grid;grid-template-columns:70px 1fr 110px 110px 40px;gap:.75rem;align-items:center;border-bottom:1px solid #f3f3f3;padding:.5rem 0}
+    .cart-row img{width:70px;height:70px;object-fit:cover;border-radius:10px;border:1px solid #eee}
+    .qty{display:flex;gap:.3rem;align-items:center}
+    .qty button{width:28px;height:28px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer}
+    .total{display:flex;justify-content:space-between;align-items:center;margin-top:1rem}
+    .btn{background:#111;color:#fff;border:none;border-radius:12px;padding:.8rem 1.1rem;cursor:pointer}
+    @media(max-width:720px){.cart-row{grid-template-columns:60px 1fr 80px 90px 30px}}
+  </style>
+</head>
+<body>
+  <nav class="topbar"><div class="container">سلة المشتريات</div></nav>
+  <main class="container">
+    <div class="cart-wrap">
+      <div id="list"></div>
+      <div class="total">
+        <div>الإجمالي: <strong id="sum">0</strong> ر.ي</div>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+          <a href="/" class="btn" style="background:#444">متابعة التسوق</a>
+          <button id="waCheckout" class="btn">إتمام الطلب عبر واتساب</button>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script>
+  const CART_KEY='abdullah_cart';
+  function getCart(){ try{ return JSON.parse(localStorage.getItem(CART_KEY)||'[]'); }catch(e){ return []; } }
+  function setCart(v){ localStorage.setItem(CART_KEY, JSON.stringify(v)); render(); }
+  function removeAt(i){ const arr=getCart(); arr.splice(i,1); setCart(arr); }
+  function inc(i){ const arr=getCart(); arr[i].qty=(arr[i].qty||1)+1; setCart(arr); }
+  function dec(i){ const arr=getCart(); arr[i].qty=Math.max(1,(arr[i].qty||1)-1); setCart(arr); }
+  function sum(){ return getCart().reduce((a,b)=>a+(b.price||0)*(b.qty||1),0); }
+  function fmt(n){ return (Number(n)||0).toLocaleString('ar-EG'); }
+
+  function render(){
+    const list=document.getElementById('list');
+    const items=getCart();
+    if(!items.length){ list.innerHTML='<p style="opacity:.8">السلة فارغة.</p>'; document.getElementById('sum').textContent='0'; return; }
+    list.innerHTML = items.map((it,i)=>`
+      <div class="cart-row">
+        <img src="${it.img||'/assets/placeholder.svg'}" alt="">
+        <div>
+          <div style="font-weight:700">${it.title||''}</div>
+          <div style="opacity:.8">السعر: ${fmt(it.price)} ر.ي</div>
+        </div>
+        <div class="qty">
+          <button onclick="dec(${i})">-</button>
+          <div style="min-width:24px;text-align:center">${it.qty||1}</div>
+          <button onclick="inc(${i})">+</button>
+        </div>
+        <div><strong>${fmt((it.price||0)*(it.qty||1))}</strong> ر.ي</div>
+        <button onclick="removeAt(${i})" class="btn" style="background:#b91c1c;padding:.4rem .6rem;border-radius:8px">حذف</button>
+      </div>
+    `).join('');
+    document.getElementById('sum').textContent = fmt(sum());
+  }
+
+  async function waCheckout(){
+    const items = getCart();
+    if(!items.length){ alert('السلة فارغة'); return; }
+    const total = sum();
+    let text = 'مرحبًا، أريد إنهاء طلب سلة مشتريات:\n';
+    items.forEach((x,idx)=>{
+      text += `${idx+1}) ${x.title} — ${x.qty} × ${x.price} ر.ي = ${(x.price||0)*(x.qty||1)} ر.ي\n`;
+    });
+    text += `\nالإجمالي: ${total} ر.ي`;
+    try{
+      const r = await fetch('/config.json'); const c = r.ok? await r.json(): null;
+      const phone = c && c.whatsapp ? c.whatsapp : '';
+      const url = phone ? `https://wa.me/${phone}?text=${encodeURIComponent(text)}` : `https://wa.me/?text=${encodeURIComponent(text)}`;
+      window.open(url, '_blank');
+    }catch(e){
+      const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+      window.open(url, '_blank');
+    }
+  }
+
+  document.getElementById('waCheckout').addEventListener('click', waCheckout);
+  render();
+  </script>
+</body>
+</html>

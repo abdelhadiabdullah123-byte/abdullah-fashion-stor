@@ -1,0 +1,147 @@
+/* التنسيقات الأساسية للمتجر */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.6;
+  background: #f7f7f9;
+  color: #111;
+}
+
+body.dark {
+  background: #0f1115;
+  color: #e6e9ef;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.site-header {
+  background: #fff;
+  border-bottom: 1px solid #eee;
+  padding: 1rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+body.dark .site-header {
+  background: #0b0d10;
+  border-color: #1b1f26;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.brand-name {
+  text-decoration: none;
+  color: inherit;
+}
+
+.links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.links a {
+  text-decoration: none;
+  color: inherit;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.links a:hover {
+  background: rgba(0,0,0,0.05);
+}
+
+body.dark .links a:hover {
+  background: rgba(255,255,255,0.05);
+}
+
+.links a.active {
+  background: #111;
+  color: #fff;
+}
+
+body.dark .links a.active {
+  background: #e6e9ef;
+  color: #111;
+}
+
+.site-footer {
+  background: #fff;
+  border-top: 1px solid #eee;
+  padding: 2rem 0;
+  margin-top: 3rem;
+  text-align: center;
+}
+
+body.dark .site-footer {
+  background: #0b0d10;
+  border-color: #1b1f26;
+}
+
+.site-footer a {
+  color: inherit;
+}
+
+/* التجاوب */
+@media (max-width: 768px) {
+  .nav {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .links {
+    gap: 0.5rem;
+  }
+  
+  .links a {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
+}
+
+
+/* === Product badges === */
+.card { position: relative; }
+.badges {
+  position: absolute;
+  top: .5rem;
+  left: .5rem;
+  display: flex;
+  gap: .25rem;
+  flex-wrap: wrap;
+  z-index: 3;
+}
+.badge {
+  font-size: .72rem;
+  padding: .22rem .5rem;
+  border-radius: .5rem;
+  background: #111;
+  color: #fff;
+  opacity: .95;
+  box-shadow: 0 1px 2px rgba(0,0,0,.15);
+}
+.badge.sale { background: #b91c1c; }        /* أحمر - خصم */
+.badge.new { background: #065f46; }         /* أخضر داكن - جديد */
+.badge.bestseller { background: #1f2937; }  /* رمادي داكن - الأكثر مبيعًا */
